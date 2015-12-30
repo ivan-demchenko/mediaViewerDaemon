@@ -1,10 +1,18 @@
 {
   "name": "media_view_daemon",
-  "version": "0.0.1",
+  "version": "0.0.4",
+  "preferGlobal": "true",
   "description": "Daemon that processes images for mediaView",
   "main": "lib/app.js",
   "author": "Ivan Demchenko (raqy.style@gmail.com)",
   "license": "MIT",
+  "directories": {
+    "bin": "./bin",
+    "lib": "./lib"
+  },
+  "bin": {
+    "media-view-daemon": "./bin/media-view-daemon"
+  },
   "dependencies": {
     "daemon": "^1.1.0",
     "q": "^1.4.1",
