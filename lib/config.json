@@ -1,9 +1,4 @@
 {
-  "cacheRootDir": "/Users/ivan/Pictures/cache",
-  "processingPause": 1000,
-  "processDirs": [
-    "/Users/ivan/Pictures/Nexus 5/Snapseed2"
-  ],
   "photos": {
     "thumb": {
       "w": 100,
