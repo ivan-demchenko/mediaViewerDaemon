@@ -8,23 +8,26 @@ This [article](https://www.digitalocean.com/community/tutorials/how-to-write-a-l
 
 * nix system
 * nodejs 5.x
+* git
 
 ### Run
 
-Create a file `user_config.json` with the following content:
+1. `git clone https://github.com/raqystyle/mediaViewerDaemon.git`
+2. `cd mediaViewerDaemon`
+3. `mkdir ./logs`
+4. `vim ./user_config.json` and paste the following in it:
 
-```json
-{
-  "cacheRootDir": "/home/you/mv_cache",
-  "processingPause": 500,
-  "processDirs": [
-    "/home/you/Pictures"
-  ]
-}
-```
+	```json
+	{
+	  "cacheRootDir": "/home/you/mv_cache",
+	  "processingPause": 500,
+	  "processDirs": [
+	    "/home/you/Pictures"
+	  ]
+	}
+	```
 
-and then run `./bin/media-view-daemon`, it will start indexing you `processDirs`
-into `cacheRootDir`
+5. `./bin/media-view-daemon`, it will start indexing you `processDirs` into `cacheRootDir`
 
 ### Stop
 
@@ -32,8 +35,8 @@ into `cacheRootDir`
 
 the output might be
 
-```
-$> ps -axf | grep [m]edia-view-daemon | awk '{ print "pid:"$2", parent-pid:"$3 }'
+```bash
+$> ps -aux | grep media-view-daemon | awk '{ print "pid:"$2", parent-pid:"$3 }'
 pid:33811, parent-pid:1
 pid:33842, parent-pid:33811
 ```

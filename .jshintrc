@@ -1,4 +1,4 @@
 {
   "esnext": true,
-  "predef": ["console", "setTimeout", "process", "require", "__dirname"]
+  "predef": ["console", "setTimeout", "process", "require", "__dirname", "module"]
 }
