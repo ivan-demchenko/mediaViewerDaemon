@@ -1,5 +1,6 @@
 {
   "name": "media_view_daemon",
+
   "version": "0.0.4",
   "preferGlobal": "true",
   "description": "Daemon that processes images for mediaView",
