@@ -1,6 +1,5 @@
 {
   "name": "media_view_daemon",
-
   "version": "0.0.4",
   "preferGlobal": "true",
   "description": "Daemon that processes images for mediaView",
@@ -16,9 +15,13 @@
   },
   "dependencies": {
     "daemon": "^1.1.0",
-    "q": "^1.4.1",
+    "fluture": "^1.2.1",
     "ramda": "^0.19.0",
     "readdir-recursive": "0.0.4",
     "winston": "^2.1.1"
+  },
+  "devDependencies": {
+    "jasmine": "^2.4.1",
+    "mock-require": "^1.3.0"
   }
 }
