@@ -1,21 +1,25 @@
-var mockery = require('mockery');
-
-mockery.registerSubstitute('fs', require('./mocks/fs'));
-mockery.registerSubstitute('./user_config.json', require('./mocks/user_config'));
-
-var Service = require('../lib/service');
+var assert = require('chai').assert;
+var sinon = require('sinon');
+var proxyquire = require('proxyquire');
 
 describe('Service functions', () => {
-  beforeEach(() => mockery.enable());
-  afterEach(() => mockery.disable());
+
+  let Service;
+
+  before(() => {
+    Service = proxyquire('../lib/service', {
+      './img-resize': require('./mocks/img-resize'),
+      './logger': require('./mocks/logger')
+    });
+  });
 
   describe('processFile', () => {
 
-    it('should return Promise(0) if file was processed fine', done => {
+    it('should return Promise(0) if file was processed successfully', done => {
       Service.processFile('thumb', 'a.jpg').fork(
         done,
         res => {
-          expect(res).toBe(0);
+          assert.equal(res, 0);
           done();
         }
       )
