@@ -1,6 +1,7 @@
 var assert = require('chai').assert;
 var sinon = require('sinon');
 var proxyquire = require('proxyquire');
+var Future = require('fluture');
 
 describe('Service functions', () => {
 
@@ -14,10 +15,10 @@ describe('Service functions', () => {
     });
   });
 
-  describe('processFile', () => {
+  describe('resizePhoto', () => {
 
     it('should return Promise(0) if file was processed successfully', done => {
-      Service.processFile('thumb', 'a.jpg').fork(
+      Service.resizePhoto('thumb', 'a.jpg').fork(
         done,
         res => {
           assert.equal(res, 0);
@@ -33,7 +34,6 @@ describe('Service functions', () => {
     it('should return Promise([]) as both thumb and preview are missing for a.jpg', done => {
       Service.findMissingCacheItems('a.jpg').fork(
         res => {
-          assert.isArray(res, 'The result is an Array');
           assert(res.length === 0, 'The result is an empty Array');
           done();
         },
@@ -49,6 +49,26 @@ describe('Service functions', () => {
           done();
         }
       )
+    });
+
+  })
+
+  describe('onFileChanged', () => {
+
+    it('should return an Array of Futures', () => {
+      let x = Service.onFileChanged('/home/', Service.resizePhoto, {}, 'a.jpg');
+      assert(Array.isArray(x), 'it should be an Array');
+    });
+
+    it('should return an Array(Future(Int))', (done) => {
+      Future.parallel(1, Service.onFileChanged('/home/', Service.resizePhoto, {}, 'a.jpg')).fork(
+        err => done(),
+        succ => {
+          assert(succ[0] === 0, 'The first one is 0');
+          assert(succ[1] === 0, 'The first one is 0');
+          done();
+        }
+      );
     });
 
   })

@@ -8,27 +8,28 @@ describe('Helper functions', () => {
 
   before(() => {
     H = proxyquire('../lib/helpers', {
-      'fs': require('./mocks/fs')
+      'fs': require('./mocks/fs'),
+      '../user_config.json': require('./mocks/user_config.json')
     });
   });
 
   describe('cachedCopyExists', () => {
 
-    it('should return False if the file does not exists', done => {
-      H.cachedCopyExists('error', 'path').fork(
-        errorRes => {
-          assert.equal(errorRes, false);
+    it('should return file name for non existing file', done => {
+      H.cachedCopyExists('type', 'nonexisting').fork(
+        er => {
+          assert(er === 'nonexisting');
           done();
         },
         done
       )
     });
 
-    it('should return True if the file does exists', done => {
-      H.cachedCopyExists('any', 'other').fork(
+    it('should return file name for existing file', done => {
+      H.cachedCopyExists('type', 'existing').fork(
         done,
-        successRes => {
-          assert.equal(successRes, true);
+        sr => {
+          assert(sr === 'existing');
           done();
         }
       )
@@ -89,7 +90,7 @@ describe('Helper functions', () => {
   describe('cachePath', () => {
 
     it('should return proper path using user_config', () => {
-      assert.equal(H.cachePath('a', 'b'), '/home/a/b')
+      assert.equal(H.cachePath('a', 'b'), '/test_config_home/a/b')
     });
 
   });

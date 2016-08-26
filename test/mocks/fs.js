@@ -1,9 +1,9 @@
 module.exports = {
   constants: { F_OK: 1 },
 
-  readdirSync: (a, b) => ['/home/thumb/a.jpg', '/home/preview/a.jpg'],
+  readdirSync: (a, b) => ['/test_config_home/thumb/a.jpg', '/test_config_home/preview/a.jpg'],
 
-  access: (path, mode, cb) => path == '/home/error/path'
+  access: (path, mode, cb) => path == '/test_config_home/type/nonexisting'
     ? cb('Error')
     : cb()
 }

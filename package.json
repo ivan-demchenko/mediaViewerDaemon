@@ -7,6 +7,7 @@
   "author": "Ivan Demchenko (raqy.style@gmail.com)",
   "license": "MIT",
   "scripts": {
+    "runOnce": "rm -r ./logs/* && node ./lib/app.js",
     "test": "./node_modules/.bin/mocha"
   },
   "directories": {
