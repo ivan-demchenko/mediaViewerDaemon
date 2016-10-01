@@ -1,3 +1,3 @@
 module.exports = {
-  info: () => console.info.bind(console)
+  info: console.info.bind(console)
 }

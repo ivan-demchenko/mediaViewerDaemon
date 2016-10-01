@@ -17,7 +17,7 @@ describe('Service functions', () => {
 
   describe('resizePhoto', () => {
 
-    it('should return Promise(0) if file was processed successfully', done => {
+    it('should return Future(_, 0) if file was processed successfully', done => {
       Service.resizePhoto('thumb', 'a.jpg').fork(
         done,
         res => {
@@ -29,43 +29,19 @@ describe('Service functions', () => {
 
   });
 
-  describe('findMissingCacheItems', () => {
-
-    it('should return Promise([]) as both thumb and preview are missing for a.jpg', done => {
-      Service.findMissingCacheItems('a.jpg').fork(
-        res => {
-          assert(res.length === 0, 'The result is an empty Array');
-          done();
-        },
-        done
-      )
-    });
-
-    it('should return Promise([thumb, preview]) for b.jpg', done => {
-      Service.findMissingCacheItems('b.jpg').fork(
-        done,
-        res => {
-          assert(res.toString() == ['thumb', 'preview'].toString());
-          done();
-        }
-      )
-    });
-
-  })
-
   describe('onFileChanged', () => {
 
-    it('should return an Array of Futures', () => {
-      let x = Service.onFileChanged('/home/', Service.resizePhoto, {}, 'a.jpg');
-      assert(Array.isArray(x), 'it should be an Array');
+    it('should return a Future', () => {
+      let future = Service.onFileChanged('/home/', {}, 'a.jpg');
+      assert(Future.isFuture(future) === true, 'x should be a Future');
     });
 
-    it('should return an Array(Future(Int))', (done) => {
-      Future.parallel(1, Service.onFileChanged('/home/', Service.resizePhoto, {}, 'a.jpg')).fork(
-        err => done(),
-        succ => {
-          assert(succ[0] === 0, 'The first one is 0');
-          assert(succ[1] === 0, 'The first one is 0');
+    it('should return Future([Bool, Bool]) denoting existing files', done => {
+      Service.onFileChanged('/home/', {}, 'a.jpg').fork(
+        err => done(err),
+        res => {
+          assert(res[0] === true, 'Thumb exists');
+          assert(res[1] === true, 'Preview exists');
           done();
         }
       );
