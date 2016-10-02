@@ -19,11 +19,10 @@ This [article](https://www.digitalocean.com/community/tutorials/how-to-write-a-l
 
 	```json
 	{
-	  "cacheRootDir": "/home/you/mv_cache",
-	  "processingPause": 500,
-	  "processDirs": [
-	    "/home/you/Pictures"
-	  ]
+	  "outputDir": "/Users/ivandemchenko/testMediaDaemonRes",
+	  "srcPaths": [
+			"/Users/.../testMediaDaemon"
+		]
 	}
 	```
 
