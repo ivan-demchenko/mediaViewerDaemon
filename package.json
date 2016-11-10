@@ -7,6 +7,8 @@
   "author": "Ivan Demchenko (raqy.style@gmail.com)",
   "license": "MIT",
   "scripts": {
+    "setup": "npm i && typings install",
+    "build": "tsc ./src/*.ts -m commonjs -outDir ./lib",
     "runOnce": "rm -r ./logs/* && node ./lib/app.js",
     "test": "./node_modules/.bin/mocha"
   },
@@ -19,16 +21,19 @@
   },
   "dependencies": {
     "daemon": "^1.1.0",
-    "fluture": "^1.2.1",
-    "ramda": "^0.19.0",
+    "fluture": "^4.0.3",
+    "most": "^1.0.5",
+    "ramda": "^0.22.1",
     "readdir-recursive": "0.0.4",
-    "winston": "^2.1.1"
+    "winston": "^2.3.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "mocha": "^3.0.2",
-    "mockery": "^1.7.0",
+    "mocha": "^3.1.2",
+    "mockery": "^2.0.0",
     "proxyquire": "^1.7.10",
-    "sinon": "^1.17.5"
+    "sinon": "^1.17.6",
+    "typescript": "^2.0.8",
+    "typings": "^2.0.0"
   }
 }

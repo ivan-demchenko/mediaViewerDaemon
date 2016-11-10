@@ -1,8 +1,12 @@
 ///<reference path="../typings/index.d.ts"/>
-"use strict";
-var most_1 = require("most");
-most_1.of([1, 2, 3]).subscribe(console.log.bind(console));
-//
+
+import { of } from 'most';
+
+
+of([1,2,3]).subscribe(console.log.bind(console));
+
+const userConfig = require('../user_config.json');
+
 // const compose = require('ramda/src/compose');
 // const logger = require('./logger');
 // const Future = require('fluture');

@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "chai": "registry:npm/chai#3.5.0+20160723033700",
+    "ramda": "registry:npm/ramda#0.21.0+20160531162943"
+  },
+  "globalDependencies": {
+    "es6-shim": "registry:dt/es6-shim#0.31.2+20160602141504",
+    "node": "registry:dt/node#6.0.0+20161102143327",
+    "winston": "registry:dt/winston#0.0.0+20161108133445"
+  }
+}
