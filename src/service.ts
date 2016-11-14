@@ -12,7 +12,7 @@ import { imgResize } from './img-resize';
 import { logger } from './logger';
 import * as Future from 'fluture';
 
-import { valueDefined, cachePath, cachedCopyExists, getSizeStr, isPhoto, nonDotFile } from './helpers';
+import { valueDefined, cachePath, cachedCopyExists, getSizeStr, isPhoto } from './helpers';
 
 export const resizePhoto:CurriedFunction2<FileType, FileSrc, Future<string, string>> =
 curry((type:FileType, src:FileSrc):Future<string, string> => {

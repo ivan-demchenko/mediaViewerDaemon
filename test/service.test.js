@@ -17,11 +17,11 @@ describe('Service functions', () => {
 
   describe('resizePhoto', () => {
 
-    it('should return Future(_, 0) if file was processed successfully', done => {
+    it('should return Future(string, string) if file was processed successfully', done => {
       Service.resizePhoto('thumb', 'a.jpg').fork(
         done,
         res => {
-          assert.equal(res, 0);
+          assert.equal(res, 'done: 0');
           done();
         }
       )
@@ -36,12 +36,12 @@ describe('Service functions', () => {
       assert(Future.isFuture(future) === true, 'x should be a Future');
     });
 
-    it('should return Future([Bool, Bool]) denoting existing files', done => {
+    it('should return Future([string, string]) denoting existing files', done => {
       Service.onFileChanged('/home/', {}, 'a.jpg').fork(
         err => done(err),
         res => {
-          assert(res[0] === true, 'Thumb exists');
-          assert(res[1] === true, 'Preview exists');
+          assert(res[0] === 'a.jpg');
+          assert(res[1] === 'a.jpg');
           done();
         }
       );

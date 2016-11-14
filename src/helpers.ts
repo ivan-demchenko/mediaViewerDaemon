@@ -32,7 +32,3 @@ export const getSizeStr = (type:FileType):FormattedImgSize =>
 
 export const isPhoto:(name:FileSrc) => boolean =
   compose(lt(0), length, match(new RegExp('\.(jpeg|jpg)$')));
-
-
-export const nonDotFile:(name:FileSrc) => boolean =
-  compose(equals(0), length, match(new RegExp('^\.')));

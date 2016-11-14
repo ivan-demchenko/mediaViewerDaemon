@@ -5,7 +5,7 @@ module.exports = {
   getSizeStr: () => '100x100',
   cachedCopyExists: (type, src) => {
     return src === 'a.jpg'
-      ? Future((rej, res) => rej(false))
-      : Future((rej, res) => res(true))
+      ? Future((rej, res) => rej('a.jpg'))
+      : Future((rej, res) => res('a.jpg'))
   }
 }

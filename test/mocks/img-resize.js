@@ -1,3 +1,5 @@
 const Future = require('fluture');
 
-module.exports = () => Future((rej, res) => res(0))
+module.exports = () => {
+    return Future((rej, res) => res('done: 0'))
+}

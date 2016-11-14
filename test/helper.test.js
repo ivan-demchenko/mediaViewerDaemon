@@ -9,19 +9,19 @@ describe('Helper functions', () => {
   before(() => {
     H = proxyquire('../lib/helpers', {
       'fs': require('./mocks/fs'),
-      '../user_config.json': require('./mocks/user_config.json')
+      '../config/user-config.json': require('./mocks/user_config.json')
     });
   });
 
   describe('cachedCopyExists', () => {
 
     it('should return file name for non existing file', done => {
-      H.cachedCopyExists('type', 'nonexisting').fork(
-        er => {
-          assert(er === 'nonexisting');
+      H.cachedCopyExists('img', 'nonexisting').fork(
+        er => {},
+        x => {
+          assert(x === 'nonexisting');
           done();
-        },
-        done
+        }
       )
     });
 
@@ -33,18 +33,6 @@ describe('Helper functions', () => {
           done();
         }
       )
-    });
-
-  });
-
-  describe('nonDotFile', () => {
-
-    it('should return True for non dot file', () => {
-      assert.equal(H.nonDotFile('filename.txt'), true);
-    });
-
-    it('should return False for a dot-file', () => {
-      assert.equal(H.nonDotFile('.filename'), false);
     });
 
   });
