@@ -1,27 +1,31 @@
 ///<reference path="../typings/index.d.ts"/>
 
+import { FileType, FormattedImgSize, FileName, FileSrc, FileDest, SrcDir } from './interfaces';
 import * as Future from 'fluture';
 import { spawn } from 'child_process';
 import * as path from 'path';
-import { curry } from 'ramda';
+import { curry, CurriedFunction3 } from 'ramda';
 import { logger } from './logger';
 
-export const imgResize:Future = curry((size:string, dst:string, src:string) => {
+export const imgResize:CurriedFunction3<FormattedImgSize, FileDest, FileSrc, Future<string, string>> =
+curry((imgSize:FormattedImgSize, dst:FileDest, src:FileSrc):Future<string, string> => {
   return Future((rej, res) => {
-    logger.info('Resize image: %s > %s', src, dst);
     var dstPath = path.dirname(dst);
-    var convertProcess = spawn(path.join(__dirname, 'img.sh'), [
+    logger.info('Resize image: src: %s\ndst:%s\ndstPath:%s\nsize: %s', src, dst, dstPath, imgSize);
+    var convertProcess = spawn(path.join(__dirname, '..', 'sh/img.sh'), [
       `--src-file=${src}`,
       `--dst-file=${dst}`,
       `--dst-path=${dstPath}`,
-      `--new-size=${size}`
+      `--new-size=${imgSize}`
     ]);
 
-    convertProcess.stdout.on('data', data => logger.info('>> stdout: %s', data));
+    convertProcess.stdout.on('data', data => 
+      logger.info('>> stdout: %s', data)
+    );
 
     convertProcess.stderr.on('data', data => {
       logger.info('>> stderr: %s', data);
-      rej('' + data);
+      rej(data);
     });
 
     convertProcess.on('close', code => {

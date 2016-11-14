@@ -1,36 +1,38 @@
-///<reference path="../typings/index.d.ts"/>
+/// <reference path="../typings/index.d.ts" />
+/// <reference path="./definitions/index.d.ts" />
 
-const config = require('./config.json');
-const userConfig = require('../user_config.json');  
+const config = require('../config/file-conversion.json');
+const userConfig = require('../config/user-config.json');
+import { FileType, FormattedImgSize, FileName, FileSrc, FileDest, SrcDir } from './interfaces';
 import { compose, not, isNil, curryN, curry, length, match, lt, equals, always, CurriedFunction2 } from 'ramda';
+import { logger } from './logger';
 import * as Future from 'fluture';
 import * as fs  from 'fs';
 import * as path from 'path';
 
-// cachePath :: string -> string -> string -> string
-export const cachePath:CurriedFunction2<string, string, string> =
+export const cachePath:CurriedFunction2<FileType, FileSrc, FileDest> =
   curryN(3, path.join)(userConfig.outputDir);
 
-// valueDefined :: * -> bool
+
 export const valueDefined:(any) => boolean =
   compose(not, isNil);
 
-// cachedCopyExists :: String -> String -> Promise(String)
-export const cachedCopyExists:CurriedFunction2<string, string, Future> = 
-curry((type:string, src:string):Future =>
-  Future.node(done =>
-    fs.access(cachePath(type, src), fs.constants.F_OK, done)
-  ).bimap(always(src), always(src))
-);
 
-// getSizeStr :: string -> string
-export const getSizeStr = (type:string) =>
-  `${config.photos[type].w}x${config.photos[type].h}`;
+export const cachedCopyExists:CurriedFunction2<FileType, FileSrc, Future<FileSrc, FileSrc>> = 
+curry((type:FileType, src:FileSrc):Future<FileSrc, FileSrc> => {
+  logger.info('cachedCopyExists: type: ' + type + ', src: ' + src);
+  return Future.node(done => fs.access(cachePath(type, src), fs.constants.F_OK, done))
+    .bimap(always(src), always(src))
+});
 
-// isPhoto :: string -> bool
-export const isPhoto:(name:string) => boolean =
+
+export const getSizeStr = (type:FileType):FormattedImgSize =>
+  <FormattedImgSize>`${config.photos[type].w}x${config.photos[type].h}`;
+
+
+export const isPhoto:(name:FileSrc) => boolean =
   compose(lt(0), length, match(new RegExp('\.(jpeg|jpg)$')));
 
-// nonDotFile :: string -> bool
-export const nonDotFile:(name:string) => boolean =
+
+export const nonDotFile:(name:FileSrc) => boolean =
   compose(equals(0), length, match(new RegExp('^\.')));

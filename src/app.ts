@@ -1,29 +1,36 @@
-///<reference path="../typings/index.d.ts"/>
+/// <reference path="../typings/index.d.ts" />
+/// <reference path="./definitions/index.d.ts" />
 
-import { of } from 'most';
+import { UserConfig } from './interfaces';
+import { compose, map, append } from 'ramda';
+import { readDirRecursively, processFile, watchDir, unwatchDirs } from './service';
+import { fromArray, fromEvent } from 'baconjs'
+import { isPhoto } from './helpers'
+import { logger } from './logger';
+import * as Future from 'fluture';
 
+const userConfig:UserConfig = require('../config/user-config.json');
 
-of([1,2,3]).subscribe(console.log.bind(console));
+const fromFuture = <L, R>(future:Future<L, R>):Bacon.EventStream<L, R> =>
+    Bacon.fromBinder(sink => {
+        future.bimap(err => new Bacon.Error(err), res => new Bacon.Next(res))
+        return () => {};
+    });
 
-const userConfig = require('../user_config.json');
+const sigterm = fromEvent(process, 'SIGTERM')
+    .doAction(x => logger.info('SIGTERM: stopping the process'));
 
-// const compose = require('ramda/src/compose');
-// const logger = require('./logger');
-// const Future = require('fluture');
-//
-// const { processFiles, watchDirs } = require('./service');
-//
-// var app = compose(Future.parallel(1), processFiles);
-//
-// app(userConfig.srcPaths).fork(
-//   logger.error,
-//   logger.info
-// )
-//
-// var watchers = watchDirs(userConfig.srcPaths);
-//
-// process.on('SIGTERM', () => {
-//   logger.info('SIGTERM : Stopping the process');
-//   R.forEach(R.invoker(0, 'close'), watchers);
-//   watchers = [];
-// });
+const filesToProcess = fromArray(userConfig.srcPaths)
+    .flatMap(readDirRecursively).filter(isPhoto).log();
+
+const dirsToWatch = fromArray(userConfig.srcPaths)
+    .doAction(x => logger.log('log', 'watch dir', x))
+    .map(watchDir)
+    .scan([], append)
+    .sampledBy(sigterm)
+    .onValue(unwatchDirs);
+
+filesToProcess
+    .takeUntil(sigterm)
+    .map(processFile)
+    .onValue(x => x.fork(logger.error, logger.info));   

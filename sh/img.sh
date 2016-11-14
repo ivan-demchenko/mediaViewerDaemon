@@ -28,7 +28,7 @@ do
   esac
 done
 
-echo "Resizing $SRC_FILE > $DST_FILE"
+echo "Resizing $SRC_FILE > $DST_FILE > $DST_PATH @ $NEW_SIZE"
 
 mkdir -p "$DST_PATH"
 convert "$SRC_FILE" -resize $NEW_SIZE -quality 100 "$DST_FILE"
