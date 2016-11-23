@@ -13,7 +13,15 @@ const userConfig:UserConfig = require('../config/user-config.json');
 
 const fromFuture = <L, R>(future:Future<L, R>):Bacon.EventStream<L, R> =>
     Bacon.fromBinder(sink => {
-        future.bimap(err => new Bacon.Error(err), res => new Bacon.Next(res))
+        future.bimap(
+            err => {
+                sink(new Bacon.Error(err));
+                sink(new Bacon.End())
+            },
+            res => {
+                sink(new Bacon.Next(res)));
+                sink(new Bacon.End())
+            }
         return () => {};
     });
 
