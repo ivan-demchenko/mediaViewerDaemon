@@ -16,12 +16,13 @@ const fromFuture = <L, R>(future:Future<L, R>):Bacon.EventStream<L, R> =>
         future.bimap(
             err => {
                 sink(new Bacon.Error(err));
-                sink(new Bacon.End())
+                sink(new Bacon.End());
             },
             res => {
-                sink(new Bacon.Next(res)));
-                sink(new Bacon.End())
+                sink(new Bacon.Next(res));
+                sink(new Bacon.End());
             }
+        );
         return () => {};
     });
 
