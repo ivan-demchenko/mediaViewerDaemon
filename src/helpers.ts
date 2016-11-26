@@ -10,6 +10,9 @@ import * as Future from 'fluture';
 import * as fs  from 'fs';
 import * as path from 'path';
 
+export const logInfo = curryN(2, logger.info);
+export const logError = curryN(2, logger.error);
+
 export const cachePath:CurriedFunction2<FileType, FileSrc, FileDest> =
   curryN(3, path.join)(userConfig.outputDir);
 
@@ -20,9 +23,11 @@ export const valueDefined:(any) => boolean =
 
 export const cachedCopyExists:CurriedFunction2<FileType, FileSrc, Future<FileSrc, FileSrc>> = 
 curry((type:FileType, src:FileSrc):Future<FileSrc, FileSrc> => {
-  logger.info('cachedCopyExists: type: ' + type + ', src: ' + src);
-  return Future.node(done => fs.access(cachePath(type, src), fs.constants.F_OK, done))
-    .bimap(always(src), always(src))
+  const cacheFilePath = cachePath(type, src);
+  logInfo('cachedCopyExists: ' + cacheFilePath);
+  return Future.node(done =>
+    fs.access(cacheFilePath, fs.constants.F_OK, done)
+  ).bimap(always(src), always(src))
 });
 
 

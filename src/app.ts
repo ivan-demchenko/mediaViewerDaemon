@@ -1,48 +1,52 @@
 /// <reference path="../typings/index.d.ts" />
 /// <reference path="./definitions/index.d.ts" />
+/// <reference path="./interfaces.ts" />
 
 import { UserConfig } from './interfaces';
-import { compose, map, append, flip } from 'ramda';
+import { compose, map, append, flip, curryN } from 'ramda';
 import { readDirRecursively, processFile, watchDir, unwatchDirs } from './service';
-import { fromArray, fromEvent } from 'baconjs'
-import { isPhoto } from './helpers'
+import { fromArray, fromBinder, Error, Next, End, EventStream, fromEvent } from 'baconjs'
+import { isPhoto, logInfo, logError } from './helpers'
 import { logger } from './logger';
 import * as Future from 'fluture';
+import { FileSrc } from './interfaces';
 
-const userConfig:UserConfig = require('../config/user-config.json');
+const userConfig: UserConfig = require('../config/user-config.json');
 
-const fromFuture = <L, R>(future:Future<L, R>):Bacon.EventStream<L, R> =>
-    Bacon.fromBinder(sink => {
-        future.bimap(
-            err => {
-                sink(new Bacon.Error(err));
-                sink(new Bacon.End());
+const futureToStream = <L, R>(future: Future<L, R>): EventStream<L, R> => {
+    return fromBinder(sink => {
+        future.fork(
+            (err:L) => {
+                sink(new Error(err));
+                sink(new End());
             },
-            res => {
-                sink(new Bacon.Next(res));
-                sink(new Bacon.End());
+            (res:R) => {
+                sink(new Next(res));
+                sink(new End());
             }
         );
-        return () => {};
+        return () => { };
     });
+};
 
 const sigterm =
     fromEvent(process, 'SIGTERM')
-    .doAction(x => logger.info('SIGTERM: stopping the process'));
+        .doAction(logInfo('SIGTERM: stopping the process'));
 
-const filesToProcess =
+const filesToProcess: EventStream<{}, FileSrc> =
     fromArray(userConfig.srcPaths)
-    .flatMap(readDirRecursively).filter(isPhoto);
+        .flatMap(readDirRecursively).filter(isPhoto);
 
 const dirsToWatch =
     fromArray(userConfig.srcPaths)
-    .doAction(x => logger.log('log', 'watch dir', x))
-    .map(watchDir)
-    .scan([], flip(append))
-    .sampledBy(sigterm)
-    .onValue(unwatchDirs);
+        .doAction(logInfo('watch dir'))
+        .map(watchDir)
+        .scan([], flip(append))
+        .sampledBy(sigterm)
+        .onValue(unwatchDirs);
 
-filesToProcess
+const x = filesToProcess
     .takeUntil(sigterm)
     .map(processFile)
-    .onValue(x => x.fork(logger.error, logger.info));   
+    .flatMapWithConcurrencyLimit<FileSrc[]>(1, futureToStream)
+    .onValue(logInfo('processing result'));

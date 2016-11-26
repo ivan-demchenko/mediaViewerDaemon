@@ -9,6 +9,7 @@
   "scripts": {
     "setup": "npm i && typings install",
     "build": "tsc ./src/*.ts -m commonjs -outDir ./lib",
+    "dev": "tsc -w ./src/*.ts -m commonjs -outDir ./lib",
     "runOnce": "rm -r ./logs/* && node ./lib/app.js",
     "test": "./node_modules/.bin/mocha"
   },
