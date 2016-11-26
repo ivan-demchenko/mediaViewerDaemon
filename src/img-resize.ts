@@ -12,7 +12,7 @@ curry((imgSize:FormattedImgSize, dst:FileDest, src:FileSrc):Future<string, strin
   return Future((rej, res) => {
     var dstPath = path.dirname(dst);
     logInfo('Resize image: src: %s\ndst:%s\ndstPath:%s\nsize: %s', src, dst, dstPath, imgSize);
-    var convertProcess = spawn(path.join(__dirname, '..', 'sh/img.sh'), [
+    var convertProcess = spawn(path.join(__dirname, '..', 'bin/img.sh'), [
       `--src-file=${src}`,
       `--dst-file=${dst}`,
       `--dst-path=${dstPath}`,
