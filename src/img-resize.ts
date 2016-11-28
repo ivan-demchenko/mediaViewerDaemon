@@ -20,17 +20,17 @@ curry((imgSize:FormattedImgSize, dst:FileDest, src:FileSrc):Future<string, strin
     ]);
 
     convertProcess.stdout.on('data', data => 
-      logInfo('>> stdout: %s', data)
+      logInfo('>> stdout: %s', data.toString())
     );
 
     convertProcess.stderr.on('data', data => {
-      logInfo('>> stderr: %s', data);
-      rej(data);
+      logInfo('>> stderr: %s', data.toString());
+      rej(data.toString());
     });
 
     convertProcess.on('close', code => {
-      logInfo('Process exited with code %s', code);
-      res('done: ' + code);
+      logInfo('Process exited with code %s', code.toString());
+      res('done: ' + code.toString());
     });
 
   });
