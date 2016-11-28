@@ -33,14 +33,14 @@ const sigterm =
     fromEvent(process, 'SIGTERM')
         .doAction(logInfo('SIGTERM: stopping the process'));
 
-const userDirs: EventStream<{}, FileSrc> =
-    fromArray(userConfig.srcPaths);
-
 const filesToProcess: EventStream<{}, FileSrc> =
-    userDirs.flatMap(readDirRecursively).filter(isPhoto);
+    fromArray(userConfig.srcPaths)
+        .flatMap(readDirRecursively)
+        .filter(isPhoto);
 
 const dirsToWatch =
-    userDirs.doAction(logInfo('watching: '))
+    fromArray(userConfig.srcPaths)
+        .doAction(logInfo('watching: '))
         .map(watchDir)
         .scan([], flip(append))
         .sampledBy(sigterm)
